@@ -1,0 +1,28 @@
+{
+  "name": "checklist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "checklist.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RagingRectangle/ChecklistBot.git"
+  },
+  "author": "RagingRectangle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RagingRectangle/ChecklistBot/issues"
+  },
+  "homepage": "https://github.com/RagingRectangle/ChecklistBot#readme",
+  "dependencies": {
+    "@discordjs/rest": "1.1.0",
+    "ansi-parser": "^3.2.10",
+    "colormap": "^2.3.2",
+    "discord-api-types": "0.36.2",
+    "discord.js": "14.5.0",
+    "fs": "0.0.1-security",
+    "moment": "^2.29.1"
+  }
+}
