@@ -106,9 +106,16 @@ module.exports = {
             });
          }
       } //End of p loop
-      interaction.reply({
-         components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~premadeSelected~${interaction.user.username}~${interaction.user.discriminator}`).setPlaceholder('Select checklist').addOptions(listOptions))]
-      }).catch(console.error);
+      if (listOptions.length > 0){
+         interaction.reply({
+            components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~premadeSelected~${interaction.user.username}~${interaction.user.discriminator}`).setPlaceholder('Select checklist').addOptions(listOptions))]
+         }).catch(console.error);
+      }
+      else {
+         interaction.reply({
+            embeds: [new EmbedBuilder().setTitle(`No Premade Checklists!`).setDescription(`- Create premade checklists in \`./config/checklists.json\``)]
+         }).catch(console.error);
+      }
    }, //End of selectPremadeChecklist()
 
 
