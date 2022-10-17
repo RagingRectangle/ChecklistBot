@@ -69,12 +69,23 @@ module.exports = {
          format: 'hex',
          alpha: 1
       });
+      var embedComponents = [];
+      let dropdownsNeeded = Math.min(4, Math.ceil(newListOptions.length / 25));
+      var optionCount = 0;
+      for (var d = 0; d < dropdownsNeeded; d++){
+         var listOptions = [];
+         for (var i = 0; i < 25 && optionCount < newListOptions.length; i++, optionCount++) {
+            listOptions.push(newListOptions[optionCount]);
+         }//End of i loop
+         let dropdown = new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~select~${interaction.user.username}~${interaction.user.discriminator}~${d}`).setPlaceholder('Select Completed Items').addOptions(listOptions));
+         embedComponents.push(dropdown);
+      }//End of d loop
       let finishedButton = new ButtonBuilder().setCustomId(`ChecklistBot~markFinished~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Finish').setStyle(ButtonStyle.Success);
       let editButton = new ButtonBuilder().setCustomId(`ChecklistBot~editChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Edit').setStyle(ButtonStyle.Primary);
       let cancelButton = new ButtonBuilder().setCustomId(`ChecklistBot~cancelChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Delete').setStyle(ButtonStyle.Danger);
       let buttonRow = new ActionRowBuilder().addComponents(finishedButton).addComponents(editButton).addComponents(cancelButton);
+      embedComponents.push(buttonRow);
       var newEmbed = new EmbedBuilder().setTitle(interaction.message.embeds[0]['title']).setDescription(`${newEmbedList.join('\n')}\n\n*Checklist updated <t:${moment().format('X')}:R>*`);
-      let componentList = new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~select~${interaction.user.username}~${interaction.user.discriminator}`).setPlaceholder('Select Completed Items').addOptions(newListOptions));
       if (checkCount == splitList.length) {
          newEmbed.setColor('2DD900');
          newEmbed.setDescription(newEmbed.data.description.replace('Checklist updated', 'Checklist completed'));
@@ -87,7 +98,7 @@ module.exports = {
          newEmbed.setColor(colors[colorNum]);
          await interaction.update({
             embeds: [newEmbed],
-            components: [componentList, buttonRow]
+            components: embedComponents
          }).catch(console.error);
       }
    }, //End of itemSelected()

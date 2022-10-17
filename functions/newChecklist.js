@@ -45,28 +45,40 @@ module.exports = {
          }
       } //End of u loop
       var customEmbed = new EmbedBuilder().setTitle(checklistName);
-      let componentList = new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~select~${interaction.user.username}~${interaction.user.discriminator}`).setPlaceholder('Select Completed Items').addOptions(selectListOptions));
+      var embedComponents = [];
+      let dropdownsNeeded = Math.min(4, Math.ceil(selectListOptions.length / 25));
+      var optionCount = 0;
+
+      for (var d = 0; d < dropdownsNeeded; d++){
+         var listOptions = [];
+         for (var i = 0; i < 25 && optionCount < selectListOptions.length; i++, optionCount++) {
+            listOptions.push(selectListOptions[optionCount]);
+         }//End of i loop
+         let dropdown = new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~select~${interaction.user.username}~${interaction.user.discriminator}~${dropdownsNeeded}~${d}`).setPlaceholder('Select Completed Items').addOptions(listOptions));
+         embedComponents.push(dropdown);
+      }//End of d loop
       let finishedButton = new ButtonBuilder().setCustomId(`ChecklistBot~markFinished~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Finish').setStyle(ButtonStyle.Success);
       let editButton = new ButtonBuilder().setCustomId(`ChecklistBot~editChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Edit').setStyle(ButtonStyle.Primary);
       let cancelButton = new ButtonBuilder().setCustomId(`ChecklistBot~cancelChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Delete').setStyle(ButtonStyle.Danger);
       let buttonRow = new ActionRowBuilder().addComponents(finishedButton).addComponents(editButton).addComponents(cancelButton);
+      embedComponents.push(buttonRow);
       if (type == 'new') {
          customEmbed.setColor('B30000').setDescription(`${embedList.join('\n')}\n\n*Checklist started <t:${moment().format('X')}:R>*`)
          await interaction.reply({
             embeds: [customEmbed],
-            components: [componentList, buttonRow]
+            components: embedComponents
          }).catch(console.error);
       } else if (type == 'premade') {
          customEmbed.setColor('B30000').setDescription(`${embedList.join('\n')}\n\n*Checklist started <t:${moment().format('X')}:R>*`)
          await interaction.update({
             embeds: [customEmbed],
-            components: [componentList, buttonRow]
+            components: embedComponents
          }).catch(console.error);
       } else if (type == 'edit') {
          customEmbed.setDescription(`${embedList.join('\n')}\n\n*Checklist updated <t:${moment().format('X')}:R>*`).setColor(interaction.message.embeds[0]['color']);
          await interaction.update({
             embeds: [customEmbed],
-            components: [componentList, buttonRow]
+            components: embedComponents
          }).catch(console.error);
       }
    }, //End of createCustomChecklist
@@ -97,18 +109,29 @@ module.exports = {
 
 
    selectPremadeChecklist: async function selectPremadeChecklist(client, interaction) {
-      var listOptions = [];
+      var selectListOptions = [];
       for (var p in premades) {
          if (premades[p]['name'] != '' && premades[p]['items'].length > 1) {
-            listOptions.push({
+            selectListOptions.push({
                label: premades[p]['name'],
                value: premades[p]['name']
             });
          }
       } //End of p loop
-      if (listOptions.length > 0){
+      if (selectListOptions.length > 0){
+         var embedComponents = [];
+         let dropdownsNeeded = Math.min(4, Math.ceil(selectListOptions.length / 25));
+         var optionCount = 0;
+         for (var d = 0; d < dropdownsNeeded; d++){
+            var listOptions = [];
+            for (var i = 0; i < 25 && optionCount < selectListOptions.length; i++, optionCount++) {
+               listOptions.push(selectListOptions[optionCount]);
+            }//End of i loop
+            let dropdown = new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~premadeSelected~${interaction.user.username}~${interaction.user.discriminator}~${d}`).setPlaceholder('Select checklist').addOptions(selectListOptions));
+            embedComponents.push(dropdown);
+         }//End of d loop
          interaction.reply({
-            components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~premadeSelected~${interaction.user.username}~${interaction.user.discriminator}`).setPlaceholder('Select checklist').addOptions(listOptions))]
+            components: embedComponents
          }).catch(console.error);
       }
       else {
