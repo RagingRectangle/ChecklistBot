@@ -25,7 +25,7 @@ const premades = require('../config/checklists.json');
 
 module.exports = {
    createCustomChecklist: async function createCustomChecklist(client, interaction, type) {
-      let checklistName = interaction.fields.getTextInputValue('checklistName');
+      let checklistName = interaction.fields.getTextInputValue('checklistName').slice(0, 40);
       let modalListText = interaction.fields.getTextInputValue('checklistList');
       var userList = modalListText.split('\n');
       var selectListOptions = [];
@@ -49,14 +49,14 @@ module.exports = {
       let dropdownsNeeded = Math.min(4, Math.ceil(selectListOptions.length / 25));
       var optionCount = 0;
 
-      for (var d = 0; d < dropdownsNeeded; d++){
+      for (var d = 0; d < dropdownsNeeded; d++) {
          var listOptions = [];
          for (var i = 0; i < 25 && optionCount < selectListOptions.length; i++, optionCount++) {
             listOptions.push(selectListOptions[optionCount]);
-         }//End of i loop
+         } //End of i loop
          let dropdown = new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~select~${interaction.user.username}~${interaction.user.discriminator}~${dropdownsNeeded}~${d}`).setPlaceholder('Select Completed Items').addOptions(listOptions));
          embedComponents.push(dropdown);
-      }//End of d loop
+      } //End of d loop
       let finishedButton = new ButtonBuilder().setCustomId(`ChecklistBot~markFinished~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Finish').setStyle(ButtonStyle.Success);
       let editButton = new ButtonBuilder().setCustomId(`ChecklistBot~editChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Edit').setStyle(ButtonStyle.Primary);
       let cancelButton = new ButtonBuilder().setCustomId(`ChecklistBot~cancelChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Delete').setStyle(ButtonStyle.Danger);
@@ -91,7 +91,7 @@ module.exports = {
          .setTitle('Create Custom Checklist');
       let checklistName = new TextInputBuilder()
          .setCustomId('checklistName')
-         .setLabel("What's the name of your checklist?")
+         .setLabel("What's a short name for your checklist?")
          .setStyle(TextInputStyle.Short)
          .setRequired(true)
          .setPlaceholder(`My Custom Checklist`);
@@ -118,23 +118,22 @@ module.exports = {
             });
          }
       } //End of p loop
-      if (selectListOptions.length > 0){
+      if (selectListOptions.length > 0) {
          var embedComponents = [];
          let dropdownsNeeded = Math.min(4, Math.ceil(selectListOptions.length / 25));
          var optionCount = 0;
-         for (var d = 0; d < dropdownsNeeded; d++){
+         for (var d = 0; d < dropdownsNeeded; d++) {
             var listOptions = [];
             for (var i = 0; i < 25 && optionCount < selectListOptions.length; i++, optionCount++) {
                listOptions.push(selectListOptions[optionCount]);
-            }//End of i loop
+            } //End of i loop
             let dropdown = new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`ChecklistBot~premadeSelected~${interaction.user.username}~${interaction.user.discriminator}~${d}`).setPlaceholder('Select checklist').addOptions(selectListOptions));
             embedComponents.push(dropdown);
-         }//End of d loop
+         } //End of d loop
          interaction.reply({
             components: embedComponents
          }).catch(console.error);
-      }
-      else {
+      } else {
          interaction.reply({
             embeds: [new EmbedBuilder().setTitle(`No Premade Checklists!`).setDescription(`- Create premade checklists in \`./config/checklists.json\``)]
          }).catch(console.error);
