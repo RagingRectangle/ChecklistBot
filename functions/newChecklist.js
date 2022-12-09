@@ -48,7 +48,6 @@ module.exports = {
       var embedComponents = [];
       let dropdownsNeeded = Math.min(4, Math.ceil(selectListOptions.length / 25));
       var optionCount = 0;
-
       for (var d = 0; d < dropdownsNeeded; d++) {
          var listOptions = [];
          for (var i = 0; i < 25 && optionCount < selectListOptions.length; i++, optionCount++) {
@@ -59,7 +58,7 @@ module.exports = {
       } //End of d loop
       let finishedButton = new ButtonBuilder().setCustomId(`ChecklistBot~markFinished~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Finish').setStyle(ButtonStyle.Success);
       let editButton = new ButtonBuilder().setCustomId(`ChecklistBot~editChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Edit').setStyle(ButtonStyle.Primary);
-      let cancelButton = new ButtonBuilder().setCustomId(`ChecklistBot~cancelChecklist~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Delete').setStyle(ButtonStyle.Danger);
+      let cancelButton = new ButtonBuilder().setCustomId(`ChecklistBot~cancelChecklistVerify~${interaction.user.username}~${interaction.user.discriminator}`).setLabel('Delete').setStyle(ButtonStyle.Danger);
       let buttonRow = new ActionRowBuilder().addComponents(finishedButton).addComponents(editButton).addComponents(cancelButton);
       embedComponents.push(buttonRow);
       if (type == 'new') {

@@ -81,8 +81,10 @@ client.on('interactionCreate', async interaction => {
             EditChecklist.finishChecklist(client, interaction);
          } else if (interactionSplit[1] == 'editChecklist') {
             EditChecklist.editChecklist(client, interaction);
-         } else if (interactionSplit[1] == 'cancelChecklist') {
-            await interaction.message.delete().catch(console.error);
+         } else if (interactionSplit[1] == 'restartChecklist') {
+            EditChecklist.restartChecklist(client, interaction);
+         } else if (interactionSplit[1].startsWith('cancelChecklist')) {
+            EditChecklist.cancelChecklist(client, interaction, interactionSplit[1].replace('cancelChecklist', ''));
          }
       } //End of verified user
    } //End of ChecklistBot~
@@ -101,12 +103,12 @@ client.on('interactionCreate', async interaction => {
    interactionID = interactionID.replace('ChecklistBot~modal~', '');
    if (interactionID == 'new') {
       NewChecklist.createCustomChecklist(client, interaction, 'new');
-   }
-   else if (interactionID == 'edit') {
+   } else if (interactionID == 'edit') {
       NewChecklist.createCustomChecklist(client, interaction, 'edit');
-   }
-   else if (interactionID == 'premade') {
+   } else if (interactionID == 'premade') {
       NewChecklist.createCustomChecklist(client, interaction, 'premade');
+   } else if (interactionID == 'verifyDelete') {
+      EditChecklist.cancelChecklist(client, interaction, interactionID);
    }
 });
 
